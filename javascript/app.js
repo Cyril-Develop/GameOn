@@ -1,4 +1,4 @@
-import { checkInputValue, checkIfConditionsAccepted, checkIfCitySelected } from "./functions.js";
+import { setErrorMessage, hideErrorMessage, checkIfInputIsEmpty, checkInputValue, checkIfConditionsAccepted, checkIfCitySelected, checkIfUserIsOlderThan18 } from "./functions.js";
 
 // Modal Navigation
 const formWrapper = document.querySelector(".form_wrapper");
@@ -42,62 +42,47 @@ const message = {
 // Regex
 const regexName = /^([A-Za-z|\s]{2,15})?([-]{0,1})?([A-Za-z|\s]{2,15})$/;
 const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-const regexBirthdate = /^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/;
 const regexQuantity = /^([0-9]{1,2})$/;
 
-// Check input value with event listener
-firstnameField.addEventListener('input', () => {
-    checkInputValue(regexName, firstnameField, message.name)
-});
-
-lastnameField.addEventListener('input', () => {
-    checkInputValue(regexName, lastnameField, message.name)
-});
-
-emailField.addEventListener('input', () => {
-    checkInputValue(regexEmail, emailField, message.email)
-});
-
-// birthdateField.addEventListener('input', function () {
-
-// });
-
-quantityField.addEventListener('input', () => {
-    checkInputValue(regexQuantity, quantityField, message.quantity)
-});
-
-conditionsCheckbox.addEventListener('input', () => {
-    checkIfConditionsAccepted(conditionsCheckbox, message.conditions)
-});
-
-allBtnRadio.forEach(radio => radio.addEventListener('change', () => {
-    checkIfCitySelected(allBtnRadio, message.city)
-}));
-    
+// Check input with event listener
+firstnameField.addEventListener('input', () => checkInputValue(regexName, firstnameField, message.name)); 
+lastnameField.addEventListener('input', () => checkInputValue(regexName, lastnameField, message.name));
+emailField.addEventListener('input', () => checkInputValue(regexEmail, emailField, message.email));
+birthdateField.addEventListener('input', () => checkIfUserIsOlderThan18(birthdateField, message.birthdate));
+quantityField.addEventListener('input', () => checkInputValue(regexQuantity, quantityField, message.quantity));
+conditionsCheckbox.addEventListener('input', () => checkIfConditionsAccepted(conditionsCheckbox, message.conditions));
+allBtnRadio.forEach(radio => radio.addEventListener('change', () => checkIfCitySelected(allBtnRadio, message.city)));
+       
 // Validate form
 function validate(e) {
     e.preventDefault();
 
+    // Check if input is empty
     allInput.forEach(input => {
-        if (!input.value) {
-            input.parentElement.setAttribute('data-error-visible', 'true');
-            input.parentElement.setAttribute('data-error', message.fieldEmpty);
+        if (checkIfInputIsEmpty(input) === false) {
+            setErrorMessage(input, message.fieldEmpty);
             isFormValid = false;
-        }
+        } else {
+            hideErrorMessage(input);
+            isFormValid = true;
+        };
     });
 
     // Check radio button
-    checkIfCitySelected(allBtnRadio, message.city)
+    checkIfCitySelected(allBtnRadio, message.city);
 
+    // check date 
+    checkIfUserIsOlderThan18(birthdateField, message.birthdate);
+    
     // Send modal if form is valid
     if (checkIfConditionsAccepted(conditionsCheckbox, message.conditions) !== false && 
         checkIfCitySelected(allBtnRadio, message.city) !== false &&
+        checkIfUserIsOlderThan18(birthdateField, message.birthdate) !== false &&
         isFormValid) {
             formWrapper.style.display = 'none';
-            modalSuccess.style.display = 'block';
+            modalSuccess.style.display = 'flex';
             form.reset();
-        }
-        
+        };   
 };
 
 // Send Form

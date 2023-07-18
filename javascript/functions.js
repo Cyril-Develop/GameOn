@@ -1,35 +1,60 @@
+// Show error message
+export const setErrorMessage = (element, message) => {
+    element.parentElement.setAttribute('data-error-visible', 'true');
+    element.parentElement.setAttribute('data-error', message);
+};
+
+// Hide error message
+export const hideErrorMessage = element => {
+    element.parentElement.removeAttribute('data-error-visible');
+    element.parentElement.removeAttribute('data-error');
+};
+
+// Check if input is empty
+export function checkIfInputIsEmpty(element, message) {
+    if (!element.value) {
+        setErrorMessage(element, message);
+        return false;
+    } else hideErrorMessage(element);
+};
+
 // Check input value
-export function checkInputValue(regex, input, message) {
-    if (!regex.test(input.value)) {
-        input.parentElement.setAttribute('data-error-visible', 'true');
-        input.parentElement.setAttribute('data-error', message);
-    } else {
-        input.parentElement.removeAttribute('data-error-visible');
-        input.parentElement.removeAttribute('data-error');
-    };
+export function checkInputValue(regex, element, message) {
+    if (!regex.test(element.value)) setErrorMessage(element, message);  
+    else hideErrorMessage(element);
 };
 
 // Check if conditions are accepted
-export function checkIfConditionsAccepted(input, message) {
-    if(!input.checked) {
-        input.parentElement.setAttribute('data-error-visible', 'true');
-        input.parentElement.setAttribute('data-error', message);
+export function checkIfConditionsAccepted(element, message) {
+    if(!element.checked) {
+        setErrorMessage(element, message);
         return false;
-    } else {
-        input.parentElement.removeAttribute('data-error-visible');
-        input.parentElement.removeAttribute('data-error');
-    }
+    } else hideErrorMessage(element);
 };
 
 // Check if a city is selected
 export function checkIfCitySelected(cities, message) {
     const isChecked = Array.from(cities).some(radio => radio.checked);
     if (!isChecked) {
-        cities[0].parentElement.setAttribute('data-error-visible', 'true');
-        cities[0].parentElement.setAttribute('data-error', message);
+        setErrorMessage(cities[0], message);
         return false;
     };
-    cities[0].parentElement.removeAttribute('data-error-visible');
-    cities[0].parentElement.removeAttribute('data-error');
-    return true;
+    hideErrorMessage(cities[0]);
+};
+
+//Check if user is older than 18
+export function checkIfUserIsOlderThan18(element, message) {
+    const birthdate = new Date(element.value);
+    let difference = Date.now() - birthdate.getTime();
+    difference = new Date(difference);
+    const userAge = difference.getFullYear() - 1970;
+
+    const birthYear = birthdate.getFullYear().toString();
+    if (!birthYear.startsWith('19') || birthYear.length !== 4 || userAge < 18) {
+        setErrorMessage(element, message);
+        return false;
+    }  else {
+        hideErrorMessage(element);
+        return true;
+    }
 };
