@@ -1,4 +1,4 @@
-import { setErrorMessage, hideErrorMessage, checkIfInputIsEmpty, checkInputValue, checkIfConditionsAccepted, checkIfCitySelected, checkIfUserIsOlderThan18 } from "./functions.js";
+import { setErrorMessage, hideErrorMessage, checkIfInputIsEmpty, checkInputValue, checkIfConditionsAccepted, checkIfCitySelected, checkIfUserIsYoungerThan18 } from "./functions.js";
 
 // Modal Navigation
 const formWrapper = document.querySelector(".form_wrapper");
@@ -48,7 +48,7 @@ const regexQuantity = /^([0-9]{1,2})$/;
 firstnameField.addEventListener('input', () => checkInputValue(regexName, firstnameField, message.name)); 
 lastnameField.addEventListener('input', () => checkInputValue(regexName, lastnameField, message.name));
 emailField.addEventListener('input', () => checkInputValue(regexEmail, emailField, message.email));
-birthdateField.addEventListener('input', () => checkIfUserIsOlderThan18(birthdateField, message.birthdate));
+birthdateField.addEventListener('input', () => checkIfUserIsYoungerThan18(birthdateField, message.birthdate));
 quantityField.addEventListener('input', () => checkInputValue(regexQuantity, quantityField, message.quantity));
 conditionsCheckbox.addEventListener('input', () => checkIfConditionsAccepted(conditionsCheckbox, message.conditions));
 allBtnRadio.forEach(radio => radio.addEventListener('change', () => checkIfCitySelected(allBtnRadio, message.city)));
@@ -72,12 +72,12 @@ function validate(e) {
     checkIfCitySelected(allBtnRadio, message.city);
 
     // check date 
-    checkIfUserIsOlderThan18(birthdateField, message.birthdate);
+    checkIfUserIsYoungerThan18(birthdateField, message.birthdate);
     
     // Send modal if form is valid
     if (checkIfConditionsAccepted(conditionsCheckbox, message.conditions) !== false && 
         checkIfCitySelected(allBtnRadio, message.city) !== false &&
-        checkIfUserIsOlderThan18(birthdateField, message.birthdate) !== false &&
+        checkIfUserIsYoungerThan18(birthdateField, message.birthdate) !== false &&
         isFormValid) {
             formWrapper.style.display = 'none';
             modalSuccess.style.display = 'flex';
