@@ -10,18 +10,14 @@ export const hideErrorMessage = element => {
     element.parentElement.removeAttribute('data-error');
 };
 
-// Check if input is empty
-export function checkIfInputIsEmpty(element, message) {
-    if (!element.value) {
-        setErrorMessage(element, message);
-        return false;
-    } else hideErrorMessage(element);
-};
-
 // Check input value
 export function checkInputValue(regex, element, message) {
-    if (!regex.test(element.value)) setErrorMessage(element, message);  
-    else hideErrorMessage(element);
+    if (!regex.test(element.value)) {
+        setErrorMessage(element, message);
+        return false;
+    } 
+    hideErrorMessage(element);
+    return true; 
 };
 
 // Check if conditions are accepted
@@ -29,7 +25,9 @@ export function checkIfConditionsAccepted(element, message) {
     if(!element.checked) {
         setErrorMessage(element, message);
         return false;
-    } else hideErrorMessage(element);
+    } 
+    hideErrorMessage(element);
+    return true;  
 };
 
 // Check if a city is selected
@@ -40,6 +38,7 @@ export function checkIfCitySelected(cities, message) {
         return false;
     };
     hideErrorMessage(cities[0]);
+    return true;
 };
 
 //Check if user is older than 18
@@ -55,8 +54,7 @@ export function checkIfUserIsYoungerThan18(element, message) {
     if (birthYear < currentYear - 100 || birthYear.toString().length !== 4 || userAge < 18) {
         setErrorMessage(element, message);
         return false;
-    }  else {
-        hideErrorMessage(element);
-        return true;
-    }
+    } 
+    hideErrorMessage(element);
+    return true;
 };

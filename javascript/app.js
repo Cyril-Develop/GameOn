@@ -1,4 +1,4 @@
-import { setErrorMessage, hideErrorMessage, checkIfInputIsEmpty, checkInputValue, checkIfConditionsAccepted, checkIfCitySelected, checkIfUserIsYoungerThan18 } from "./functions.js";
+import { checkInputValue, checkIfConditionsAccepted, checkIfCitySelected, checkIfUserIsYoungerThan18 } from "./functions.js";
 
 // Modal Navigation
 const formWrapper = document.querySelector(".form_wrapper");
@@ -15,11 +15,7 @@ const emailField = document.querySelector('#email');
 const birthdateField = document.querySelector('#birthdate');
 const quantityField = document.querySelector('#quantity');
 const conditionsCheckbox = document.querySelector('#checkbox1');
-const allInput = document.querySelectorAll('.text-control');
 const allBtnRadio = document.querySelectorAll("input[name='location']");
-
-// Variable
-let isFormValid = true;
 
 // Toggle navbar
 btnNav.addEventListener('click', () => document.querySelector('.list').classList.toggle('menu_toggle'));
@@ -35,8 +31,7 @@ const message = {
     birthdate: 'Vous devez avoir plus de 18 ans pour participer',
     quantity: 'Veuillez renseigner un nombre entre 0 et 99',
     city: 'Veuillez sélectionner une ville',
-    conditions: `Veuillez accepter les conditions d'utilisation`,
-    fieldEmpty: 'Veuillez renseigner ce champ'
+    conditions: `Vous devez accepter les conditions d'utilisation`,
 };
 
 // Regex
@@ -57,32 +52,21 @@ allBtnRadio.forEach(radio => radio.addEventListener('change', () => checkIfCityS
 function validate(e) {
     e.preventDefault();
 
-    // Check if input is empty
-    allInput.forEach(input => {
-        if (checkIfInputIsEmpty(input) === false) {
-            setErrorMessage(input, message.fieldEmpty);
-            isFormValid = false;
-        } else {
-            hideErrorMessage(input);
-            isFormValid = true;
-        };
-    });
+    // Check if all conditions are valid
+    const isConditionsAccepted = checkIfConditionsAccepted(conditionsCheckbox, message.conditions);
+    const isCitySelected = checkIfCitySelected(allBtnRadio, message.city);
+    const isUserAgeValid = checkIfUserIsYoungerThan18(birthdateField, message.birthdate);
+    const isQuantityValid = checkInputValue(regexQuantity, quantityField, message.quantity);
+    const isEmailValid = checkInputValue(regexEmail, emailField, message.email);
+    const isLastNameValid = checkInputValue(regexName, lastnameField, message.name);
+    const isFirstNameValid = checkInputValue(regexName, firstnameField, message.name);
 
-    // Check radio button
-    checkIfCitySelected(allBtnRadio, message.city);
-
-    // check date 
-    checkIfUserIsYoungerThan18(birthdateField, message.birthdate);
-    
-    // Send modal if form is valid
-    if (checkIfConditionsAccepted(conditionsCheckbox, message.conditions) !== false && 
-        checkIfCitySelected(allBtnRadio, message.city) !== false &&
-        checkIfUserIsYoungerThan18(birthdateField, message.birthdate) !== false &&
-        isFormValid) {
-            formWrapper.style.display = 'none';
-            modalSuccess.style.display = 'flex';
-            form.reset();
-        };   
+    // If all conditions are valid 
+    if (isConditionsAccepted && isCitySelected && isUserAgeValid && isQuantityValid && isEmailValid && isLastNameValid && isFirstNameValid) {
+        formWrapper.style.display = 'none';
+        modalSuccess.style.display = 'flex';
+        form.reset();
+    } 
 };
 
 // Send Form
